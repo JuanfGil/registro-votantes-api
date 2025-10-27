@@ -1,4 +1,3 @@
-\
 /* API Registro de Votantes con auth admin (JWT) */
 require('dotenv').config();
 const express = require('express');
@@ -12,7 +11,7 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 10000;
 const DATABASE_URL = process.env.DATABASE_URL;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'VOTANTES2025'; // cambiar en prod
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'VOTANTES2025'; // cámbiala en prod
 const JWT_SECRET = process.env.JWT_SECRET || 'cambia-esto';
 const JWT_TTL = process.env.JWT_TTL || '8h';
 
@@ -20,7 +19,9 @@ if (!DATABASE_URL) console.warn('⚠️  DATABASE_URL no está definida (Render 
 
 const pool = new Pool({
   connectionString: DATABASE_URL,
-  ssl: DATABASE_URL && /render\.com|amazonaws\.com/.test(DATABASE_URL) ? { rejectUnauthorized: false } : undefined
+  ssl: DATABASE_URL && /render\.com|amazonaws\.com/.test(DATABASE_URL)
+    ? { rejectUnauthorized: false }
+    : undefined
 });
 
 function validar({ nombre, cedula, telefono, municipio }) {
@@ -45,7 +46,7 @@ function requireAuth(req, res, next) {
     if (payload.role !== 'admin') return res.status(403).json({ error: 'Prohibido' });
     req.user = payload;
     next();
-  } catch (e) {
+  } catch {
     return res.status(401).json({ error: 'Token inválido' });
   }
 }
